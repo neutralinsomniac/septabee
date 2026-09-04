@@ -3,7 +3,8 @@
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-  outputs = { self, nixpkgs }:
+  outputs =
+    { self, nixpkgs }:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -44,16 +45,19 @@
       # The upstream release archive. Bump version/build and the hash together
       # (get the new hash from the mismatch error, or `nix hash file x.7z`).
       septabeeVersion = "B";
-      septabeeBuild = "T2";
+      septabeeBuild = "T3";
 
       septabee-unwrapped = pkgs.stdenvNoCC.mkDerivation {
         pname = "septabee-unwrapped";
         version = "${septabeeVersion}-${septabeeBuild}";
         src = pkgs.fetchurl {
           url = "https://septabee.nekoweb.org/important_stuff/SEPTABEE_DOWNLOADS/version_${septabeeVersion}/septabee_linux_${septabeeVersion}_${septabeeBuild}.7z";
-          hash = "sha256-OMnbRBTku8yi4b3Ay7d70EbB/e2Qh+PfzK2O8qRFoaA=";
+          hash = "sha256-vdXJ4Qusvi/ehztmp2iibiFZLJvbU7+mRnR7KSmxrFA=";
         };
-        nativeBuildInputs = [ pkgs._7zz pkgs.python3 ];
+        nativeBuildInputs = [
+          pkgs._7zz
+          pkgs.python3
+        ];
         unpackPhase = "7zz x $src";
         sourceRoot = "linux";
         dontConfigure = true;
@@ -76,39 +80,40 @@
       };
 
       # Everything the three binaries link against or dlopen at runtime.
-      runtimeDeps = p: with p; [
-        # linked (ldd)
-        stdenv.cc.cc.lib      # libstdc++, libgcc_s
-        zlib
-        libpng
-        freetype
-        vulkan-loader
-        pipewire
-        libx11
+      runtimeDeps =
+        p: with p; [
+          # linked (ldd)
+          stdenv.cc.cc.lib # libstdc++, libgcc_s
+          zlib
+          libpng
+          freetype
+          vulkan-loader
+          pipewire
+          libx11
 
-        # dlopen'd by the GLFW/EGL/GL layer
-        libglvnd              # libGL, libEGL, libGLES*, libOpenGL, libGLX
-        mesa                  # libOSMesa + software fallback
-        wayland
-        libdecor
-        libxkbcommon
-        libxcursor
-        libxext
-        libxinerama
-        libxi
-        libxrandr
-        libxrender
-        libxxf86vm
-        libxcb
+          # dlopen'd by the GLFW/EGL/GL layer
+          libglvnd # libGL, libEGL, libGLES*, libOpenGL, libGLX
+          mesa # libOSMesa + software fallback
+          wayland
+          libdecor
+          libxkbcommon
+          libxcursor
+          libxext
+          libxinerama
+          libxi
+          libxrandr
+          libxrender
+          libxxf86vm
+          libxcb
 
-        # lets the in-app "Install" button re-download the JIT runtime if needed
-        curl
-        cacert
+          # lets the in-app "Install" button re-download the JIT runtime if needed
+          curl
+          cacert
 
-        # tinyfiledialogs backends for open/save dialogs
-        zenity
-        xmessage
-      ];
+          # tinyfiledialogs backends for open/save dialogs
+          zenity
+          xmessage
+        ];
 
       # Copies the store files into a writable directory on first run (or when
       # the store path changes) so the app can write caches (and, if it ever
@@ -159,7 +164,8 @@
         targetPkgs = runtimeDeps;
         runScript = "bash";
       };
-    in {
+    in
+    {
       packages.${system} = {
         inherit septabee septabee-unwrapped;
         fhs = fhsShell;
