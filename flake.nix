@@ -45,14 +45,14 @@
       # The upstream release archive. Bump version/build and the hash together
       # (get the new hash from the mismatch error, or `nix hash file x.7z`).
       septabeeVersion = "B";
-      septabeeBuild = "T3";
+      septabeeBuild = "T15";
 
       septabee-unwrapped = pkgs.stdenvNoCC.mkDerivation {
         pname = "septabee-unwrapped";
         version = "${septabeeVersion}-${septabeeBuild}";
         src = pkgs.fetchurl {
           url = "https://septabee.nekoweb.org/important_stuff/SEPTABEE_DOWNLOADS/version_${septabeeVersion}/septabee_linux_${septabeeVersion}_${septabeeBuild}.7z";
-          hash = "sha256-vdXJ4Qusvi/ehztmp2iibiFZLJvbU7+mRnR7KSmxrFA=";
+          hash = "sha256-+LE0Ukl2Mz2KIbe/ykM8GXTSlDFpyrB35hN3lIKcbnM=";
         };
         nativeBuildInputs = [
           pkgs._7zz
